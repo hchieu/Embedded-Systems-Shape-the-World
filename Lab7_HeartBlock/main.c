@@ -1,4 +1,4 @@
-// 0.Documentation Section 
+// 0.Documentation Section
 // Lab7_HeartBlock, main.c
 
 // Runs on LM4F120 or TM4C123 LaunchPad
@@ -13,9 +13,9 @@
 // 3) Wait 10ms (debounces the switch)
 // 4) Wait for AS to rise (release SW1)
 // 5) Wait 250ms (simulates the time between atrial and ventricular contraction)
-// 6) set VT high, which will pulse the ventricles 
+// 6) set VT high, which will pulse the ventricles
 // 7) Wait 250ms
-// 8) clear VT low 
+// 8) clear VT low
 // 9) set Ready high
 
 // Date: January 15, 2016
@@ -23,7 +23,7 @@
 // 1. Pre-processor Directives Section
 #include "TExaS.h"
 
-// Constant declarations to access port registers using 
+// Constant declarations to access port registers using
 // symbolic names instead of addresses
 #define GPIO_PORTF_DATA_R       (*((volatile unsigned long *)0x400253FC))
 #define GPIO_PORTF_DIR_R        (*((volatile unsigned long *)0x40025400))
@@ -36,7 +36,7 @@
 #define GPIO_PORTF_PCTL_R       (*((volatile unsigned long *)0x4002552C))
 #define SYSCTL_RCGC2_R          (*((volatile unsigned long *)0x400FE108))
 // 2. Declarations Section
-//   Global Variables
+// Global Variables
 unsigned int sw1;
 
 //   Function Prototypes
@@ -53,20 +53,20 @@ void ClearReady(void);
 // 3. Subroutines Section
 // MAIN: Mandatory for a C Program to be executable
 int main(void){
-  TExaS_Init(SW_PIN_PF40, LED_PIN_PF31,ScopeOn);  // activate grader and set system clock to 80 MHz
-  PortF_Init();                                   // Init port PF4 PF3 PF1    
-  EnableInterrupts();                             // enable interrupts for the grader  
-  while(1){          // Follows the nine steps list above
+	TExaS_Init(SW_PIN_PF40, LED_PIN_PF31,ScopeOn);  // activate grader and set system clock to 80 MHz
+	PortF_Init();                                   // Init port PF4 PF3 PF1
+	EnableInterrupts();                             // enable interrupts for the grader
+	while(1){          // Follows the nine steps list above
 		SetReady();      // a) Ready signal goes high
 		WaitForASLow();  // b) wait for switch to be pressed
-    ClearReady();    // c) Ready signal goes low
-    Delay1ms(10);    // d) wait 10ms
-    WaitForASHigh(); // e) wait for switch to be released
-    Delay1ms(250);   // f) wait 250ms    
-		SetVT();         // g) VT signal goes high    
+		ClearReady();    // c) Ready signal goes low
+		Delay1ms(10);    // d) wait 10ms
+		WaitForASHigh(); // e) wait for switch to be released
+		Delay1ms(250);   // f) wait 250ms
+		SetVT();         // g) VT signal goes high
 		Delay1ms(250);   // h) wait 250ms
 		ClearVT();       // i) VT signal goes low
-  }
+	}
 }
 // Subroutine to initialize port F pins for input and output
 // PF4 is input SW1 and PF3-1 is output LEDs
@@ -74,15 +74,15 @@ int main(void){
 // Outputs: None
 // Notes: ...
 void PortF_Init(void){ volatile unsigned long delay;
-  SYSCTL_RCGC2_R |= 0x00000020;      // 1) F clock
-  delay = SYSCTL_RCGC2_R;            // delay to allow clock to stabilize     
-  GPIO_PORTF_AMSEL_R &= 0x00;        // 2) disable analog function
-  GPIO_PORTF_PCTL_R &= 0x00000000;   // 3) GPIO clear bit PCTL  
-  GPIO_PORTF_DIR_R &= ~0x10;         // 4.1) PF4 input,
-  GPIO_PORTF_DIR_R |= 0x0E;          // 4.2) PF3,2,1 output  
-  GPIO_PORTF_AFSEL_R &= 0x00;        // 5) no alternate function
-  GPIO_PORTF_PUR_R |= 0x10;          // 6) enable pullup resistor on PF4       
-  GPIO_PORTF_DEN_R |= 0x1E;          // 7) enable digital pins PF4-PF1
+	SYSCTL_RCGC2_R |= 0x00000020;      // 1) F clock
+	delay = SYSCTL_RCGC2_R;            // delay to allow clock to stabilize
+	GPIO_PORTF_AMSEL_R &= 0x00;        // 2) disable analog function
+	GPIO_PORTF_PCTL_R &= 0x00000000;   // 3) GPIO clear bit PCTL
+	GPIO_PORTF_DIR_R &= ~0x10;         // 4.1) PF4 input,
+	GPIO_PORTF_DIR_R |= 0x0E;          // 4.2) PF3,2,1 output
+	GPIO_PORTF_AFSEL_R &= 0x00;        // 5) no alternate function
+	GPIO_PORTF_PUR_R |= 0x10;          // 6) enable pullup resistor on PF4
+	GPIO_PORTF_DEN_R |= 0x1E;          // 7) enable digital pins PF4-PF1
 }
 // Color    LED(s) PortF
 // dark     ---    0
@@ -101,8 +101,8 @@ void PortF_Init(void){ volatile unsigned long delay;
 // Outputs: None
 void WaitForASLow(void){
 	do{
-      sw1 = GPIO_PORTF_DATA_R&0x10; // PF4 into SW1
-    }while(sw1 == 0x10);            // sw2 is pressed
+		sw1 = GPIO_PORTF_DATA_R&0x10; // PF4 into SW1
+	}while(sw1 == 0x10);            // sw2 is pressed
 }
 
 // Subroutine reads AS input and waits for signal to be high
@@ -112,8 +112,8 @@ void WaitForASLow(void){
 // Outputs: None
 void WaitForASHigh(void){
 	do{
-      sw1 = GPIO_PORTF_DATA_R&0x10; // PF4 into SW1
-    }while(!sw1);                   // sw2 is released
+		sw1 = GPIO_PORTF_DATA_R&0x10; // PF4 into SW1
+	}while(!sw1);                   // sw2 is released
 }
 
 // Subroutine sets VT high
@@ -165,4 +165,3 @@ void Delay1ms(unsigned long msec){
 	}
 
 }
-

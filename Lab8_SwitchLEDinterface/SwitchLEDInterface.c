@@ -6,7 +6,7 @@
 // button is released.  This lab requires external hardware
 // to be wired to the LaunchPad using the prototyping board.
 // January 15, 2016
-//      Jon Valvano and Ramesh Yerraballi
+// Jon Valvano and Ramesh Yerraballi
 
 // ***** 1. Pre-processor Directives Section *****
 #define GPIO_PORTE_DATA_R       (*((volatile unsigned long *)0x400243FC))
@@ -44,50 +44,49 @@ void DelayMs(unsigned long msec);
 // Lab8_artist.pdf (compatible with many various readers like Adobe Acrobat).
 
 /*
-* 1) Make PE1 an output and make PE0 an input.
-* 2) The system starts with the LED on (make PE1 =1).
-* 3) Wait about 100 ms
-* 4) If the switch is pressed (PE0 is 1), then toggle the LED once, else turn the LED on.
-* 5) Steps 3 and 4 are repeated over and over.
-*/
+ * 1) Make PE1 an output and make PE0 an input.
+ * 2) The system starts with the LED on (make PE1 =1).
+ * 3) Wait about 100 ms
+ * 4) If the switch is pressed (PE0 is 1), then toggle the LED once, else turn the LED on.
+ * 5) Steps 3 and 4 are repeated over and over.
+ */
 int main(void){
-//**********************************************************************
-// The following version tests input on PE0 and output on PE1
-//**********************************************************************
-    TExaS_Init(SW_PIN_PE0, LED_PIN_PE1, ScopeOn);  // activate grader and set system clock to 80 MHz
-    PortE_Init();
-    PE1 |= 0x02;                                   // turn the LED on
+	//**********************************************************************
+	// The following version tests input on PE0 and output on PE1
+	//**********************************************************************
+	TExaS_Init(SW_PIN_PE0, LED_PIN_PE1, ScopeOn);  // activate grader and set system clock to 80 MHz
+	PortE_Init();
+	PE1 |= 0x02;                                   // turn the LED on
 
-    EnableInterrupts();                            // enable interrupts for the grader
-    while(1){
-        DelayMs(100);
-        if (PE0 != 0x00) {
-            PE1 ^= 0x02;                           // toggle the LED if switch pressed
-        } else {
-            PE1 |= 0x02;                           // turn on the LED if switch not pressed
-        }
-    }
-
+	EnableInterrupts();                            // enable interrupts for the grader
+	while(1){
+		DelayMs(100);
+		if (PE0 != 0x00) {
+			PE1 ^= 0x02;                           // toggle the LED if switch pressed
+		} else {
+			PE1 |= 0x02;                           // turn on the LED if switch not pressed
+		}
+	}
 }
 
 void PortE_Init(void) {
-    SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOE;          // Port E clock
-    delay = SYSCTL_RCGC2_R;                        // wait 3-5 bus cycles
-    GPIO_PORTE_DIR_R |= 0x02;                      // PE1 output
-    GPIO_PORTE_DIR_R &= ~0x01;                     // PE0 input
-    GPIO_PORTE_AFSEL_R &= ~0x03;                   // not alternative
-    GPIO_PORTE_AMSEL_R &= ~0x03;                   // no analog
-    GPIO_PORTE_PCTL_R &= ~0x000000FF;              // bits for PE1,PE0
-    GPIO_PORTE_DEN_R |= 0x03;                      // enable PE1,PE0
+	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOE;          // Port E clock
+	delay = SYSCTL_RCGC2_R;                        // wait 3-5 bus cycles
+	GPIO_PORTE_DIR_R |= 0x02;                      // PE1 output
+	GPIO_PORTE_DIR_R &= ~0x01;                     // PE0 input
+	GPIO_PORTE_AFSEL_R &= ~0x03;                   // not alternative
+	GPIO_PORTE_AMSEL_R &= ~0x03;                   // no analog
+	GPIO_PORTE_PCTL_R &= ~0x000000FF;              // bits for PE1,PE0
+	GPIO_PORTE_DEN_R |= 0x03;                      // enable PE1,PE0
 }
 
 void DelayMs(unsigned long msec) {
-    unsigned long i;
-    while(msec > 0){
-        i = 13333;                                   // approximately 1 ms (1ms/12.5ns/6)
-        while(i > 0){
-            i = i - 1;
-        }
-        msec = msec - 1;                         // decrements every 100 ms
-    }
+	unsigned long i;
+	while(msec > 0){
+		i = 13333;                                  // approximately 1 ms (1ms/12.5ns/6)
+		while(i > 0){
+			i = i - 1;
+		}
+		msec = msec - 1;                            // decrements every 100 ms
+	}
 }
